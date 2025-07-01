@@ -10,14 +10,15 @@ async def send_game_info(title, image_url,channel=None,message=None):
     await channel.send(embed=embed)
 
 async def send_avalible_games(message=None, client=None, channel=None):
-    games_data = json.loads(open('./games_info.json').read())
-    if message != None:
+    print("sending avalible games")
+    with json.loads(open('./games_info.json').read()) as games_data:
+        if message != None:
+            for game in games_data:
+                await send_game_info(game['Name'], game['Picture'], message=message)
+            return
+        await client.wait_until_ready()
         for game in games_data:
-            await send_game_info(game['Name'], game['Picture'], message=message)
-        return
-    await client.wait_until_ready()
-    for game in games_data:
-        await send_game_info(game['Name'], game['Picture'], channel=channel)
+            await send_game_info(game['Name'], game['Picture'], channel=channel)
     
 
 def daily_check_handler(client, channel):
