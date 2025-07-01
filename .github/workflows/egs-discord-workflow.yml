@@ -33,10 +33,17 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+    
       - name: Create SSH key file
         run: |
           echo "${{ secrets.SSH_KEY }}" > ./vps_key
           chmod 600 ./vps_key
+
+      - name: Add VPS host key to known_hosts
+        run: |
+          mkdir -p ~/.ssh
+          ssh-keyscan 130.61.196.156 >> ~/.ssh/known_hosts
+
 
       - name: Connect to VPS/actions
         run: |
