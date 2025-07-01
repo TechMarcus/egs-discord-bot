@@ -36,7 +36,7 @@ class Mybot:
             if message.content.startswith('$games'):
                 lambda: asyncio.create_task(send_avalible_games(message=message))
             if message.content.startswith('$goida'):
-                await message.channel.send('Hello there')
+                await message.channel.send('Hello there!')
 
         client.run(TOKEN)
         
