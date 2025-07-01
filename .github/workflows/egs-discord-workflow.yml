@@ -40,14 +40,14 @@ jobs:
 
       - name: Connect to VPS/actions
         run: |
-          ssh -i ./vps_key ubuntu@130.61.196.156 "
+          ssh -i ./vps_key ubuntu@130.61.196.156 '
           echo "${{ secrets.DOCKER_PSWD }}" | docker login -u "${{ secrets.DOCKER_NAME }}" --password-stdin
           cd code/egs
           docker-compose stop discord-bot-app
           docker-compose rm -f discord-bot-app
           docker pull marcus1939/discord-bot-app:latest
           docker-compose up -d discord-bot-app
-          "
+          '
 
 
 
