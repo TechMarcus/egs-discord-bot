@@ -2,10 +2,13 @@ services:
   discord-bot-app:
     image: marcus1939/discord-bot-image
     volumes:
-      - .:/app
+      - ./:/app
+      working_dir: /app
     environment:
       - DISCORD_TOKEN=${DISCORD_TOKEN}
   egs-scraper-app:
     image: marcus1939/egs-scraper-image
     volumes:
-      - .:/app
+      - ./:/app
+      working_dir: /app
+
