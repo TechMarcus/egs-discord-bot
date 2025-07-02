@@ -35,6 +35,9 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
+        
+      - name: Set up Docker
+        uses: docker/setup-buildx-action@v3
     
       - name: Create SSH key file
         run: |
@@ -57,8 +60,8 @@ jobs:
           cd code/egs
           docker container prune -f
           docker system prune -a -f
-          docker-compose pull
-          docker-compose up -d discord-bot-app
+          docker compose pull
+          docker compose up -d discord-bot-app
           '
 
 
