@@ -1,7 +1,9 @@
-import os, discord, time
+import os
+import discord
 from bot import Mybot
 
-def main(): 
+
+def main():
     intents = discord.Intents.default()
     bot = Mybot(intents)
     bot.discord_bot(os.environ.get('DISCORD_TOKEN'))

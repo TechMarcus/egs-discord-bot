@@ -1,4 +1,5 @@
-import discord, asyncio
+import discord
+import asyncio
 from bot_tasks import daily_check_handler, send_avalible_games
 
 
@@ -7,8 +8,6 @@ class Mybot:
         self.intents = intents
         self.intents.message_content = True
         self.client = discord.Client(intents=self.intents)
-        
-
 
     def discord_bot(self, TOKEN):
         client = self.client
@@ -19,7 +18,7 @@ class Mybot:
 
             for channel in client.guilds[0].channels:
                 if channel.name == "жидівське-лігво":
-                    games_channel = client.get_channel(channel.id) 
+                    games_channel = client.get_channel(channel.id)
 
             daily_check_handler(client=client, channel=games_channel)
             print('on_ready functions loaded')
@@ -28,8 +27,7 @@ class Mybot:
         async def on_message(message):
             if message.author == client.user:
                 return
-            
-            
+
             if message.author.name == 'maksred_ay':
                 await message.reply("ХВОЙДІ СЛОВА НЕ ДАВАЛИ")
 
@@ -39,11 +37,3 @@ class Mybot:
                 await message.channel.send('Hello there!')
 
         client.run(TOKEN)
-        
-    
-
-
-
-
-
-
