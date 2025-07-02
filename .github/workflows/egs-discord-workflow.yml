@@ -48,6 +48,7 @@ jobs:
       - name: Connect to VPS/actions
         run: |
           ssh -i ./vps_key ubuntu@130.61.196.156 '
+          scp -i ./vps_key docker-compose.yml ubuntu@130.61.196.156:/home/ubuntu/code/egs/ 
           echo "${{ secrets.DOCKER_PSWD }}" | docker login -u "${{ secrets.DOCKER_NAME }}" --password-stdin
           cd code/egs
           docker container prune -f
