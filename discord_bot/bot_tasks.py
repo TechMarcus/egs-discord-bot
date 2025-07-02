@@ -1,5 +1,5 @@
 import discord, asyncio, json
-from apscheduler.schedulers.background import BackgroundScheduler
+from apscheduler.schedulers.asyncio import AsyncIOScheduler
 
 async def send_game_info(title, image_url,channel=None,message=None):
     embed = discord.Embed(title=title)
@@ -9,7 +9,7 @@ async def send_game_info(title, image_url,channel=None,message=None):
          return
     await channel.send(embed=embed)
 
-async def send_avalible_games(message=None, client=None, channel=None):
+async def send_avalible_games(client=None, channel=None, message=None):
     print("sending avalible games")
     with open('games_info.json', 'r') as file:
         games_data = json.load(file)
@@ -24,15 +24,9 @@ async def send_avalible_games(message=None, client=None, channel=None):
 
 
 def daily_check_handler(client, channel):
-    scheduler = BackgroundScheduler()
+    scheduler = AsyncIOScheduler()
 
-    scheduler.add_job(
-        lambda: asyncio.create_task(send_avalible_games(client=client, channel=channel)),
-        'cron',
-        day_of_week='tue',
-        hour=0,
-        minute=1
-    )
+    scheduler.add_job(send_avalible_games, 'cron', day_of_week='tue', hour=0, minute=1, args=[client, channel])
     
     print('daily_check_handler loaded')
     scheduler.start()
