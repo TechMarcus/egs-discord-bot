@@ -50,16 +50,17 @@ jobs:
         run: scp -i ./vps_key ./docker-compose.yml ubuntu@130.61.196.156:/home/ubuntu/code/egs/
 
 
-      - name: Deploy and restart container on VPS
+      - name: Connect to VPS/actions
         run: |
-            ssh -i ./vps_key ubuntu@130.61.196.156 '
-              echo "${{ secrets.DOCKER_PSWD }}" | docker login -u "${{ secrets.DOCKER_NAME }}" --password-stdinAdd
-              cd code/egs
-              docker container prune -f
-              docker system prune -a -f
-              docker compose pull
-              docker compose up -d discord-bot-app
-              '
+          ssh -i ./vps_key ubuntu@130.61.196.156 '
+          echo "${{ secrets.DOCKER_PSWD }}" | docker login -u "${{ secrets.DOCKER_NAME }}" --password-stdin
+          cd code/egs
+          docker stop $(docker ps -q)
+          sudo docker system prune -a -f
+          docker compose pull
+          docker compose up -d discord-bot-app
+          '
+
 
 
 
