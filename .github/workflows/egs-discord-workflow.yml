@@ -50,9 +50,8 @@ jobs:
           ssh -i ./vps_key ubuntu@130.61.196.156 '
           echo "${{ secrets.DOCKER_PSWD }}" | docker login -u "${{ secrets.DOCKER_NAME }}" --password-stdin
           cd code/egs
-          docker stop $(docker ps -q)
-          docker rm $(docker ps -aq)
-          sudo docker system prune -a -f
+          docker container prune -f
+          docker system prune -a -f
           docker compose pull
           docker compose up -d discord-bot-app
           '
