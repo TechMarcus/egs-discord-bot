@@ -53,6 +53,7 @@ jobs:
       - name: Connect to VPS/actions
         run: |
           ssh -i ./vps_key ubuntu@130.61.196.156 '
+          rm -r docker-compose.yml.save
           echo "${{ secrets.DOCKER_PSWD }}" | docker login -u "${{ secrets.DOCKER_NAME }}" --password-stdin
           cd code/egs
           docker stop $(docker ps -q)
