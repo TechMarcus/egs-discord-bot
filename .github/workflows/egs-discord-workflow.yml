@@ -47,7 +47,7 @@ jobs:
             ssh-keyscan 130.61.196.156 >> ~/.ssh/known_hosts
 
       - name: Send Docker-Compose to VPS
-        run: scp -i ~/.ssh/vps_key ./docker-compose.yml ubuntu@130.61.196.156:/home/ubuntu/code/egs/
+        run: scp -i ./vps_key ./docker-compose.yml ubuntu@130.61.196.156:/home/ubuntu/code/egs/
 
 
       - name: Connect to VPS/actions
