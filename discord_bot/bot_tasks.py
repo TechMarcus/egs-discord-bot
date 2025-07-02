@@ -1,9 +1,5 @@
-import discord, datetime, asyncio, json, time
+import discord, asyncio, json
 from apscheduler.schedulers.background import BackgroundScheduler
-
-def load_games_info():
-    with open('./games_info.json', 'r') as f:
-        return json.load(f)
 
 async def send_game_info(title, image_url,channel=None,message=None):
     embed = discord.Embed(title=title)
@@ -15,14 +11,16 @@ async def send_game_info(title, image_url,channel=None,message=None):
 
 async def send_avalible_games(message=None, client=None, channel=None):
     print("sending avalible games")
-    games_data = load_games_info()
-    if message != None:
+    with open('games_info.json', 'r') as file:
+        games_data = json.load(file)
+        
+        if message != None:
+            for game in games_data:
+                await send_game_info(game['Name'], game['Picture'], message=message)
+            return
+        await client.wait_until_ready()
         for game in games_data:
-            await send_game_info(game['Name'], game['Picture'], message=message)
-        return
-    await client.wait_until_ready()
-    for game in games_data:
-        await send_game_info(game['Name'], game['Picture'], channel=channel)
+            await send_game_info(game['Name'], game['Picture'], channel=channel)
 
 
 def daily_check_handler(client, channel):
