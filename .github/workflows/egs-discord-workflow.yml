@@ -57,8 +57,8 @@ jobs:
           cd code/egs
           docker container prune -f
           docker system prune -a -f
-          docker compose pull
-          docker compose up -d discord-bot-app
+          docker-compose pull
+          docker-compose up -d discord-bot-app
           '
 
 
