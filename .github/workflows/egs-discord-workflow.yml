@@ -33,6 +33,8 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
     
       - name: Create SSH key file
         run: |
@@ -43,11 +45,11 @@ jobs:
         run: |
           mkdir -p ~/.ssh
           ssh-keyscan 130.61.196.156 >> ~/.ssh/known_hosts
-
+          
 
       - name: Connect to VPS/actions
         run: |
-          scp -i ./vps_key docker-compose.yml ubuntu@130.61.196.156:/home/ubuntu/code/egs/ 
+          scp -i ./vps_key ./docker-compose.yml ubuntu@130.61.196.156:/home/ubuntu/code/egs/ 
           ssh -i ./vps_key ubuntu@130.61.196.156 '
           echo "${{ secrets.DOCKER_PSWD }}" | docker login -u "${{ secrets.DOCKER_NAME }}" --password-stdin
           cd code/egs
