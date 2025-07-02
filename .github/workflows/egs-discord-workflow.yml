@@ -43,13 +43,15 @@ jobs:
 
       - name: Add VPS host key to known_hosts
         run: |
-          mkdir -p ~/.ssh
-          ssh-keyscan 130.61.196.156 >> ~/.ssh/known_hosts
-          
+            mkdir -p ~/.ssh
+            ssh-keyscan 130.61.196.156 >> ~/.ssh/known_hosts
+
+      - name: Send Docker-Compose to VPS
+        run: scp -i ~/.ssh/vps_key ./docker-compose.yml ubuntu@130.61.196.156:/home/ubuntu/code/egs/
+
 
       - name: Connect to VPS/actions
-        run: |
-          scp -i ~/.ssh/vps_key ./docker-compose.yml ubuntu@130.61.196.156:/home/ubuntu/code/egs/ 
+        run: | 
           ssh -i ./vps_key ubuntu@130.61.196.156 '
           echo "${{ secrets.DOCKER_PSWD }}" | docker login -u "${{ secrets.DOCKER_NAME }}" --password-stdin
           cd code/egs
