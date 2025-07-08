@@ -1,6 +1,6 @@
 import discord
 import asyncio
-from bot_tasks import send_avalible_games
+from bot_tasks import daily_check_handler, send_avalible_games
 
 
 class Mybot:
@@ -19,24 +19,19 @@ class Mybot:
             for channel in client.guilds[0].channels:
                 if channel.name == "жидівське-лігво":
                     games_channel = client.get_channel(channel.id)
-            asyncio.create_task(send_avalible_games(client=client, channel=games_channel))
-            await client.close()
-            # daily_check_handler(client=client, channel=games_channel)
-            # print('on_ready functions loaded')
-    
 
-        # @client.event
-        # async def on_message(message):
-        #     if message.author == client.user:
-        #         return
+            daily_check_handler(client=client, channel=games_channel)
+            print('on_ready functions loaded')
 
-            # if message.author.name == 'maksred_ay':
-            #     await message.reply("ХВОЙДІ СЛОВА НЕ ДАВАЛИ")
+        @client.event
+        async def on_message(message):
+            if message.author == client.user:
+                return
 
-            # if message.content.startswith('$games'):
-            #     asyncio.create_task(send_avalible_games(message=message))
-            # if message.content.startswith('$goida'):
-            #     await message.channel.send('Hello there!')
+            if message.author.name == 'maksred_ay':
+                await message.reply("ХВОЙДІ СЛОВА НЕ ДАВАЛИ")
+
+            if message.content.startswith('$games'):
+                asyncio.create_task(send_avalible_games(message=message))
 
         client.run(TOKEN)
-

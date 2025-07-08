@@ -23,10 +23,10 @@ jobs:
         run: echo "${{ secrets.DOCKER_PSWD }}" | docker login -u "${{ secrets.DOCKER_NAME }}" --password-stdin
 
       - name: Build Docker image
-        run: docker build ./discord_bot -t marcus1939/discord-bot-app
+        run: docker build ./discord_bot -t marcus1939/discord-bot-app:latest
 
       - name: Push image to DockerHub
-        run: docker push marcus1939/discord-bot-app
+        run: docker push marcus1939/discord-bot-app:latest
     
   server-deploy:
     needs: docker-deploy
