@@ -1,6 +1,6 @@
 services:
   discord-bot-app:
-    image: marcus1939/discord-bot-image
+    image: marcus1939/discord-bot
     volumes:
       - ./games_info.json:/app/games_info.json:ro
     working_dir: /app
