@@ -20,8 +20,10 @@ class Mybot:
                 if channel.name == "жидівське-лігво":
                     games_channel = client.get_channel(channel.id)
             asyncio.create_task(send_avalible_games(client=client, channel=games_channel))
+            await client.close()
             # daily_check_handler(client=client, channel=games_channel)
-            print('on_ready functions loaded')
+            # print('on_ready functions loaded')
+    
 
         # @client.event
         # async def on_message(message):
@@ -37,3 +39,4 @@ class Mybot:
             #     await message.channel.send('Hello there!')
 
         client.run(TOKEN)
+
