@@ -18,7 +18,7 @@ async def send_avalible_games(client=None, channel=None, message=None):
 
 
     print(f"send_avalible_games called at {time.strftime('%X')}")
-    filepath = '/app/games_info.json'
+    filepath = './games_info.json'
     mtime = os.path.getmtime(filepath)
     print(f"File modification time: {mtime}")
 

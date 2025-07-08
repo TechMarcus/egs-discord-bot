@@ -3,6 +3,7 @@ services:
     image: marcus1939/discord-bot-image
     volumes:
       - ./games_info.json:/app/games_info.json:ro
+    working_dir: /app
     environment:
       - DISCORD_TOKEN=${DISCORD_TOKEN}
 
@@ -10,3 +11,4 @@ services:
     image: marcus1939/egs-scraper-image
     volumes:
       - ./games_info.json:/app/games_info.json
+    working_dir: /app
