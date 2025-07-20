@@ -54,6 +54,7 @@ jobs:
           cd code/egs
           docker stop $(docker ps -q)
           sudo docker system prune -a -f
+          echo $DISCORD_TOKEN
           docker compose pull
           docker compose up -d discord-bot-app
           docker compose logs
