@@ -20,8 +20,8 @@ jobs:
 
       -  name: Build Docker images
          run: |
-            docker build ./discord_bot -t marcus1939/discord-bot
-            docker build ./freeGamesScraper -t marcus1939/egs-scraper-app
+            docker build ./discord_bot -t marcus1939/discord-bot:latest
+            docker build ./freeGamesScraper -t marcus1939/egs-scraper-app:latest
 
 
       - name: Push image to DockerHub
