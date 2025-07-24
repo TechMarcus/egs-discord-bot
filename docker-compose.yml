@@ -8,7 +8,7 @@ services:
       - DISCORD_TOKEN=${DISCORD_TOKEN}
 
   egs-scraper-app:
-    image: marcus1939/egs-scraper-image:latest
+    image: marcus1939/egs-scraper-app:latest
     volumes:
       - ./games_info.json:/app/games_info.json
     working_dir: /app
