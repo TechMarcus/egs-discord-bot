@@ -57,7 +57,7 @@ jobs:
           rm -r docker-compose.yml.save
           echo "${{ secrets.DOCKER_PSWD }}" | docker login -u "${{ secrets.DOCKER_NAME }}" --password-stdin
           cd code/egs
-          for IMAGE in marcus1939/egs-scraper-image marcus1939/discord-bot; do
+          for IMAGE in marcus1939/egs-scraper-app marcus1939/discord-bot; do
           CONTAINERS=$(docker ps -a --filter ancestor=$IMAGE -q)
           if [ -n "$CONTAINERS" ]; then
             docker stop $CONTAINERS
@@ -65,7 +65,7 @@ jobs:
           fi
           done
           docker compose pull
-          docker compose up -d discord-bot-app
+          docker compose up -d discord-bot
           docker compose logs
           echo $DISCORD_TOKEN
           '
