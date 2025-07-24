@@ -26,8 +26,8 @@ jobs:
 
       - name: Push image to DockerHub
         run: |
-            docker push marcus1939/discord-bot
-            docker push marcus1939/egs-scraper-app
+            docker push marcus1939/discord-bot:latest
+            docker push marcus1939/egs-scraper-app:latest
     
   server-deploy:
     needs: docker-deploy
