@@ -11,10 +11,6 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
-        
-      - name: Create .env file
-        run: |
-          echo "DISCORD_TOKEN=${{ secrets.DISCORD_TOKEN }}" > .env
 
       - name: Set up Docker
         uses: docker/setup-buildx-action@v3
@@ -22,11 +18,16 @@ jobs:
       - name: Docker login
         run: echo "${{ secrets.DOCKER_PSWD }}" | docker login -u "${{ secrets.DOCKER_NAME }}" --password-stdin
 
-      - name: Build Docker image
-        run: docker build ./discord_bot -t marcus1939/discord-bot
+      -  name: Build Docker images
+         run: |
+            docker build ./discord_bot -t marcus1939/discord-bot:latest
+            docker build ./freeGamesScraper -t marcus1939/egs-scraper-app:latest
+
 
       - name: Push image to DockerHub
-        run: docker push marcus1939/discord-bot
+        run: |
+            docker push marcus1939/discord-bot:latest
+            docker push marcus1939/egs-scraper-app:latest
     
   server-deploy:
     needs: docker-deploy
@@ -56,10 +57,17 @@ jobs:
           rm -r docker-compose.yml.save
           echo "${{ secrets.DOCKER_PSWD }}" | docker login -u "${{ secrets.DOCKER_NAME }}" --password-stdin
           cd code/egs
-          docker stop $(docker ps -q)
-          sudo docker system prune -a -f
+          for IMAGE in marcus1939/egs-scraper-app marcus1939/discord-bot; do
+          CONTAINERS=$(docker ps -a --filter ancestor=$IMAGE -q)
+          if [ -n "$CONTAINERS" ]; then
+            docker stop $CONTAINERS
+            docker rm $CONTAINERS
+          fi
+          done
           docker compose pull
-          docker compose up -d discord-bot-app
+          docker compose up -d discord-bot
+          docker compose logs
+          echo $DISCORD_TOKEN
           '
 
 
