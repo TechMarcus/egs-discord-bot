@@ -38,7 +38,7 @@ async def send_avalible_games(client=None, channel=None, message=None):
 
 def daily_check_handler(client, channel):
     scheduler = AsyncIOScheduler()
-    scheduler.add_job(send_avalible_games, 'cron', day_of_week='sun', hour=0, minute=1, args=[client, channel])
+    scheduler.add_job(send_avalible_games, 'cron', day_of_week=7, hour=0, minute=1, args=[client, channel])
 
     print('daily_check_handler loaded')
     scheduler.start()
