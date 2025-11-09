@@ -65,7 +65,7 @@ jobs:
           fi
           done
           docker compose pull
-          docker compose up -d discord-bot
+          docker compose up -d discord-bot-app
           docker compose logs
           echo $DISCORD_TOKEN
           '
