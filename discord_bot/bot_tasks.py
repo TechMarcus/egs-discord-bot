@@ -24,20 +24,7 @@ async def send_avalible_games(client=None, channel=None, message=None):
     with open(filepath, 'r') as file:
         games_data = json.load(file)
         print(f"Loaded games data: {games_data}")
-
-        if message is not None:
-            for game in games_data:
-                await send_game_info(game['Name'], game['Picture'], message=message)
-            return
-        await client.wait_until_ready()
         for game in games_data:
-            await send_game_info(game['Name'], game['Picture'], channel=channel)
-        await channel.send("@everyone")
+            await send_game_info(f"{game['Name']}\nLink:{game['Url']}", game['Picture'], message=message)
+        return
 
-
-# def daily_check_handler(client, channel):
-#     scheduler = AsyncIOScheduler()
-#     scheduler.add_job(send_avalible_games, 'cron', day_of_week=7, hour=0, minute=1, args=[client, channel])
-
-#     print('daily_check_handler loaded')
-#     scheduler.start()
