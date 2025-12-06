@@ -123,7 +123,7 @@ func GameInfoToJson(games []GameInfo, jsonfile string) error {
 	if error != nil {
 		return error
 	}
-	file, err := os.OpenFile(jsonfile, os.O_RDWR|os.O_CREATE|os.O_TRUNC, 0755)
+	file, err := os.OpenFile(jsonfile, os.O_RDWR|os.O_TRUNC, 0755)
 	if err != nil {
 		return err
 	}
