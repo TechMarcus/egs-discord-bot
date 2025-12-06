@@ -27,6 +27,11 @@ type FreeGamesPromotionsElements struct {
 	Price              FreeGamesPromotionsPrice       `json:"price"`
 	UpcomingPromotions FreeGamesUpcomingPromotion     `json:"promotions"`
 	KeyImages          []FreeGamesPromotionsKeyImages `json:"keyImages"`
+	OfferMappings      []FreeGamesOfferMappings       `json:"offerMappings"`
+}
+
+type FreeGamesOfferMappings struct {
+	PageSlug string `json:"pageSlug"`
 }
 
 type FreeGamesPromotionsKeyImages struct {
@@ -58,6 +63,7 @@ type FreeGamesPromotionsTotalPrice struct {
 type GameInfo struct {
 	Name    string
 	Picture string
+	Url     string
 }
 
 func CheckFreeGame() ([]GameInfo, error) {
@@ -89,6 +95,7 @@ func CheckFreeGame() ([]GameInfo, error) {
 			var gameInfo GameInfo
 			gameInfo.Name = element.Title
 			gameInfo.Picture = GetGamePicture(element)
+			gameInfo.Url = GetGameUrl(element)
 			freeGames = append(freeGames, gameInfo)
 		}
 	}
@@ -100,6 +107,11 @@ func GetGamePicture(element FreeGamesPromotionsElements) string {
 	gamePicture := element.KeyImages[0].Url
 	url := gamePicture
 	return url
+}
+
+func GetGameUrl(element FreeGamesPromotionsElements) string {
+	gameUrl := "https://www.epicgames.com/store/en-US/p/" + element.OfferMappings[0].PageSlug
+	return gameUrl
 }
 
 func GameInfoToJson(games []GameInfo, jsonfile string) error {
