@@ -2,7 +2,6 @@ package main
 
 import (
 	"log"
-	"time"
 )
 
 func main() {
@@ -22,5 +21,4 @@ func main() {
 		log.Fatal(err)
 		return
 	}
-	time.Sleep(100000)
 }
