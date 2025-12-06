@@ -97,6 +97,7 @@ func CheckFreeGame() ([]GameInfo, error) {
 			gameInfo.Picture = GetGamePicture(element)
 			gameInfo.Url = GetGameUrl(element)
 			freeGames = append(freeGames, gameInfo)
+			// fmt.Println("Found free game:", gameInfo.Url)
 		}
 	}
 
@@ -110,8 +111,11 @@ func GetGamePicture(element FreeGamesPromotionsElements) string {
 }
 
 func GetGameUrl(element FreeGamesPromotionsElements) string {
-	gameUrl := "https://www.epicgames.com/store/en-US/p/" + element.OfferMappings[0].PageSlug
-	return gameUrl
+	if len(element.OfferMappings) == 0 {
+		return "Not found"
+	}
+	gameUrl := element.OfferMappings[0].PageSlug
+	return "https://www.epicgames.com/store/en-US/p/" + gameUrl
 }
 
 func GameInfoToJson(games []GameInfo, jsonfile string) error {
