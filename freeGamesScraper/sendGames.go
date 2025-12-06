@@ -50,6 +50,7 @@ type DiscordEmbed struct {
 	Image struct {
 		URL string `json:"url"`
 	} `json:"image"`
+	Link string `json:"url"`
 }
 
 func FreeGamesPayload(webhookUrl string, games []GameInfo) ([]byte, error) {
@@ -58,6 +59,7 @@ func FreeGamesPayload(webhookUrl string, games []GameInfo) ([]byte, error) {
 	for _, game := range games {
 		e := DiscordEmbed{
 			Title: game.Name,
+			Link:  game.Url,
 		}
 		e.Image.URL = game.Picture
 		payload["embeds"] = append(payload["embeds"], e)
