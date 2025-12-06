@@ -54,7 +54,6 @@ jobs:
       - name: Connect to VPS/actions
         run: |
           ssh -i ./vps_key ubuntu@130.61.196.156 '
-          rm -r docker-compose.yml.save
           echo "${{ secrets.DOCKER_PSWD }}" | docker login -u "${{ secrets.DOCKER_NAME }}" --password-stdin
           cd code/egs
           for IMAGE in marcus1939/egs-scraper-app marcus1939/discord-bot; do
@@ -65,9 +64,7 @@ jobs:
           fi
           done
           docker compose pull
-          docker compose up -d discord-bot
-          docker compose logs
-          echo $DISCORD_TOKEN
+          docker compose up -d discord-bot-app
           '
 
 

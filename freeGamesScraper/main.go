@@ -5,7 +5,7 @@ import (
 )
 
 func main() {
-	jsonfile := "../games_info.json"
+	jsonfile := "./games_info.json"
 	freeGames, err := CheckFreeGame()
 	if err != nil {
 		log.Fatal(err)
