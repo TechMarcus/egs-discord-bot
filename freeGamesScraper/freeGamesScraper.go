@@ -8,8 +8,10 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"time"
 )
 
+// General structure
 type FreeGamesPromotions struct {
 	Data FreeGamesPromotionsData `json:"data"`
 }
@@ -22,13 +24,46 @@ type FreeGamesPromotionsCatalog struct {
 type FreeGamesPromotionsSearchStore struct {
 	Elements []FreeGamesPromotionsElements `json:"elements"`
 }
+
+// Game elements
+
 type FreeGamesPromotionsElements struct {
-	Title string                   `json:"title"`
-	Price FreeGamesPromotionsPrice `json:"price"`
-	// UpcomingPromotions FreeGamesUpcomingPromotion     `json:"promotions"`
+	Title         string                         `json:"title"`
+	Price         FreeGamesPromotionsPrice       `json:"price"`
+	AllPromotions FreeGamesAllPromotions         `json:"promotions"`
 	KeyImages     []FreeGamesPromotionsKeyImages `json:"keyImages"`
 	OfferMappings []FreeGamesOfferMappings       `json:"offerMappings"`
 }
+
+// All promotions
+
+type FreeGamesAllPromotions struct {
+	CurrentPromotions  []FreeGameCurrentPromotion  `json:"promotionalOffers"`
+	UpcomingPromotions []FreeGameUpcomingPromotion `json:"upcomingPromotionalOffers"`
+}
+
+// Current promotions
+
+type FreeGameCurrentPromotion struct {
+	GamesOffer []FreeGamesOffers `json:"promotionalOffers"`
+}
+type FreeGamesOffers struct {
+	EndDate   string `json:"endDate"`
+	StartDate string `json:"startDate"`
+}
+
+// Upcoming promotions
+
+type FreeGameUpcomingPromotion struct {
+	UpcommingGameOffer []UpcommingFreeGamesOffer `json:"promotionalOffers"`
+}
+
+type UpcommingFreeGamesOffer struct {
+	EndDate   string `json:"endDate"`
+	StartDate string `json:"startDate"`
+}
+
+// Url mapping
 
 type FreeGamesOfferMappings struct {
 	PageSlug string `json:"pageSlug"`
@@ -38,20 +73,7 @@ type FreeGamesPromotionsKeyImages struct {
 	Url string `json:"url"`
 }
 
-// type FreeGamesUpcomingPromotion struct {
-// 	UpcomingPromotionalOffers []FreeGamesUpcommingPromotionalOffers `json:"upcomingPromotionalOffers"`
-// }
-// type FreeGamesUpcommingPromotionalOffers struct {
-// 	PromotionalOffers []FreeGamesPromotionalOffers `json:"promotionalOffers"`
-// }
-// type FreeGamesPromotionalOffers struct {
-// StartDate string `json:"startDate"`
-// EndDate   string `json:"endDate"`
-// DiscountSettings FreeGamesPromotionalOffersDiscountSettings `json:"discountSetting"`
-// }
-//	type FreeGamesPromotionalOffersDiscountSettings struct {
-//		DiscountPercentage int `json:"discountPercentage"`
-//	}
+// Price info
 
 type FreeGamesPromotionsPrice struct {
 	TotalPrice FreeGamesPromotionsTotalPrice `json:"totalPrice"`
@@ -60,11 +82,14 @@ type FreeGamesPromotionsTotalPrice struct {
 	DiscountPrice int `json:"discountPrice"`
 }
 
+// Game info struct
+
 type GameInfo struct {
-	Name    string
-	Picture string
-	Url     string
-	// EndDate string
+	Name      string
+	Picture   string
+	Url       string
+	EndDate   string
+	StartDate string
 }
 
 func CheckFreeGame() ([]GameInfo, error) {
@@ -87,19 +112,35 @@ func CheckFreeGame() ([]GameInfo, error) {
 	}
 
 	elements := freeGamesPromotions.Data.Catalog.SearchStore.Elements
-	var freeGames []GameInfo
+	freeGames := make([]GameInfo, 0, len(elements))
 	for _, element := range elements {
-		if element.Price.TotalPrice.DiscountPrice == 0 {
-			var gameInfo GameInfo
-			gameInfo.Name = element.Title
-			gameInfo.Picture = GetGamePicture(element)
-			gameInfo.Url = GetGameUrl(element)
-			// gameInfo.EndDate = element.UpcomingPromotions.UpcomingPromotionalOffers[0].PromotionalOffers[0].EndDate
-			freeGames = append(freeGames, gameInfo)
-			// fmt.Println("Found free game:", gameInfo.Url)
+		if element.Price.TotalPrice.DiscountPrice != 0 {
+			continue
 		}
-	}
+		gameInfo := GameInfo{
+			Name:    element.Title,
+			Picture: GetGamePicture(element),
+			Url:     GetGameUrl(element),
+		}
+		promos := element.AllPromotions
+		if len(promos.CurrentPromotions) > 0 &&
+			len(promos.CurrentPromotions[0].GamesOffer) > 0 {
 
+			offer := promos.CurrentPromotions[0].GamesOffer[0]
+			gameInfo.StartDate = offer.StartDate
+			gameInfo.EndDate = offer.EndDate
+
+		} else if len(promos.UpcomingPromotions) > 0 &&
+			len(promos.UpcomingPromotions[0].UpcommingGameOffer) > 0 {
+
+			offer := promos.UpcomingPromotions[0].UpcommingGameOffer[0]
+			gameInfo.StartDate = offer.StartDate
+			gameInfo.EndDate = offer.EndDate
+		}
+		gameInfo.StartDate = ConvertTimeFormat(gameInfo.StartDate)
+		gameInfo.EndDate = ConvertTimeFormat(gameInfo.EndDate)
+		freeGames = append(freeGames, gameInfo)
+	}
 	return freeGames, nil
 }
 
@@ -128,6 +169,7 @@ func GameInfoToJson(games []GameInfo, jsonfile string) (error, bool) {
 	}
 	defer file.Close()
 
+	// overwriting of file
 	scanner := bufio.NewScanner(file)
 	for scanner.Scan() {
 		firstLine := scanner.Text()
@@ -151,4 +193,18 @@ func GameInfoToJson(games []GameInfo, jsonfile string) (error, bool) {
 	}
 
 	return nil, true
+}
+
+func ConvertTimeFormat(givenTime string) string {
+	t, err := time.Parse(time.RFC3339Nano, givenTime)
+	if err != nil {
+		panic(err)
+	}
+	loc, err := time.LoadLocation("Europe/Kyiv")
+	if err != nil {
+		panic(err)
+	}
+	uaTime := t.In(loc)
+
+	return uaTime.Format("2006-01-02 15:04")
 }

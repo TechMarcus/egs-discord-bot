@@ -57,7 +57,7 @@ func FreeGamesPayload(webhookUrl string, games []GameInfo) ([]byte, error) {
 
 	for _, game := range games {
 		e := DiscordEmbed{
-			Title: game.Name + "\nLink: " + game.Url,
+			Title: game.Name + "\nLink: " + game.Url + "\nStart Date: " + game.StartDate + "\nEnd Date: " + game.EndDate,
 		}
 		e.Image.URL = game.Picture
 		payload["embeds"] = append(payload["embeds"], e)
