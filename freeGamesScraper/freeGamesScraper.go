@@ -23,11 +23,11 @@ type FreeGamesPromotionsSearchStore struct {
 	Elements []FreeGamesPromotionsElements `json:"elements"`
 }
 type FreeGamesPromotionsElements struct {
-	Title              string                         `json:"title"`
-	Price              FreeGamesPromotionsPrice       `json:"price"`
-	UpcomingPromotions FreeGamesUpcomingPromotion     `json:"promotions"`
-	KeyImages          []FreeGamesPromotionsKeyImages `json:"keyImages"`
-	OfferMappings      []FreeGamesOfferMappings       `json:"offerMappings"`
+	Title string                   `json:"title"`
+	Price FreeGamesPromotionsPrice `json:"price"`
+	// UpcomingPromotions FreeGamesUpcomingPromotion     `json:"promotions"`
+	KeyImages     []FreeGamesPromotionsKeyImages `json:"keyImages"`
+	OfferMappings []FreeGamesOfferMappings       `json:"offerMappings"`
 }
 
 type FreeGamesOfferMappings struct {
@@ -37,26 +37,26 @@ type FreeGamesOfferMappings struct {
 type FreeGamesPromotionsKeyImages struct {
 	Url string `json:"url"`
 }
-type FreeGamesUpcomingPromotion struct {
-	UpcomingPromotionalOffers []FreeGamesUpcommingPromotionalOffers `json:"upcomingPromotionalOffers"`
-}
-type FreeGamesUpcommingPromotionalOffers struct {
-	PromotionalOffers []FreeGamesPromotionalOffers `json:"promotionalOffers"`
-}
-type FreeGamesPromotionalOffers struct {
-	StartDate        string                                     `json:"startDate"`
-	DiscountSettings FreeGamesPromotionalOffersDiscountSettings `json:"discountSetting"`
-}
 
-type FreeGamesPromotionalOffersDiscountSettings struct {
-	DiscountPercentage int `json:"discountPercentage"`
-}
+// type FreeGamesUpcomingPromotion struct {
+// 	UpcomingPromotionalOffers []FreeGamesUpcommingPromotionalOffers `json:"upcomingPromotionalOffers"`
+// }
+// type FreeGamesUpcommingPromotionalOffers struct {
+// 	PromotionalOffers []FreeGamesPromotionalOffers `json:"promotionalOffers"`
+// }
+// type FreeGamesPromotionalOffers struct {
+// StartDate string `json:"startDate"`
+// EndDate   string `json:"endDate"`
+// DiscountSettings FreeGamesPromotionalOffersDiscountSettings `json:"discountSetting"`
+// }
+//	type FreeGamesPromotionalOffersDiscountSettings struct {
+//		DiscountPercentage int `json:"discountPercentage"`
+//	}
+
 type FreeGamesPromotionsPrice struct {
 	TotalPrice FreeGamesPromotionsTotalPrice `json:"totalPrice"`
 }
-
 type FreeGamesPromotionsTotalPrice struct {
-	OriginalPrice int `json:"originalPrice"`
 	DiscountPrice int `json:"discountPrice"`
 }
 
@@ -64,6 +64,7 @@ type GameInfo struct {
 	Name    string
 	Picture string
 	Url     string
+	// EndDate string
 }
 
 func CheckFreeGame() ([]GameInfo, error) {
@@ -84,11 +85,8 @@ func CheckFreeGame() ([]GameInfo, error) {
 	if err != nil {
 		log.Fatal(err)
 	}
-	elements := freeGamesPromotions.Data.Catalog.SearchStore.Elements
-	if err != nil {
-		return nil, err
-	}
 
+	elements := freeGamesPromotions.Data.Catalog.SearchStore.Elements
 	var freeGames []GameInfo
 	for _, element := range elements {
 		if element.Price.TotalPrice.DiscountPrice == 0 {
@@ -96,6 +94,7 @@ func CheckFreeGame() ([]GameInfo, error) {
 			gameInfo.Name = element.Title
 			gameInfo.Picture = GetGamePicture(element)
 			gameInfo.Url = GetGameUrl(element)
+			// gameInfo.EndDate = element.UpcomingPromotions.UpcomingPromotionalOffers[0].PromotionalOffers[0].EndDate
 			freeGames = append(freeGames, gameInfo)
 			// fmt.Println("Found free game:", gameInfo.Url)
 		}
@@ -118,14 +117,14 @@ func GetGameUrl(element FreeGamesPromotionsElements) string {
 	return "https://www.epicgames.com/store/en-US/p/" + gameUrl
 }
 
-func GameInfoToJson(games []GameInfo, jsonfile string) error {
+func GameInfoToJson(games []GameInfo, jsonfile string) (error, bool) {
 	result, error := json.Marshal(games)
 	if error != nil {
-		return error
+		return error, false
 	}
-	file, err := os.OpenFile(jsonfile, os.O_RDWR|os.O_TRUNC, 0755)
+	file, err := os.OpenFile(jsonfile, os.O_RDONLY, 0755)
 	if err != nil {
-		return err
+		return err, false
 	}
 	defer file.Close()
 
@@ -134,17 +133,22 @@ func GameInfoToJson(games []GameInfo, jsonfile string) error {
 		firstLine := scanner.Text()
 		if string(result) == firstLine {
 			fmt.Println("No new games")
-			return nil
+			return nil, false
 		}
 	}
+	file, error = os.OpenFile(jsonfile, os.O_RDWR|os.O_TRUNC, 0755)
+	if error != nil {
+		return error, false
+	}
+	defer file.Close()
 	if err := scanner.Err(); err != nil {
 		log.Fatal(err)
 	}
 
 	_, err = file.Write(result)
 	if err != nil {
-		return err
+		return err, false
 	}
 
-	return nil
+	return nil, true
 }

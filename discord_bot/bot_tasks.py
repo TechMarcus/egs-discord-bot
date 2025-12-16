@@ -11,7 +11,6 @@ async def send_game_info(title, image_url, channel=None, message=None):
         return
     await channel.send(embed=embed)
 
-
 async def send_avalible_games(client=None, channel=None, message=None):
     print("sending avalible games")
 

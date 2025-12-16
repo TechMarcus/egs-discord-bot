@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"log"
 )
 
@@ -11,9 +12,15 @@ func main() {
 		log.Fatal(err)
 		return
 	}
-	err = GameInfoToJson(freeGames, jsonfile)
+	err, isUpdated := GameInfoToJson(freeGames, jsonfile)
 	if err != nil {
 		log.Fatal(err)
+		return
+	}
+	fmt.Println(isUpdated)
+
+	if !isUpdated {
+		log.Printf("No new free games found.")
 		return
 	}
 	err = SendGames(jsonfile)
@@ -21,4 +28,5 @@ func main() {
 		log.Fatal(err)
 		return
 	}
+
 }
