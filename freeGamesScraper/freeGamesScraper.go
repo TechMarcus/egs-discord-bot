@@ -152,7 +152,7 @@ func GetGamePicture(element FreeGamesPromotionsElements) string {
 
 func GetGameUrl(element FreeGamesPromotionsElements) string {
 	if len(element.OfferMappings) == 0 {
-		return "Not found"
+		return ""
 	}
 	gameUrl := element.OfferMappings[0].PageSlug
 	return "https://www.epicgames.com/store/en-US/p/" + gameUrl
