@@ -1,12 +1,4 @@
 services:
-  discord-bot-app:
-    image: marcus1939/discord-bot:latest
-    volumes:
-      - ./games_info.json:/app/games_info.json:ro
-    working_dir: /app
-    environment:
-      - DISCORD_TOKEN=${DISCORD_TOKEN}
-
   egs-scraper-app:
     image: marcus1939/egs-scraper-app:latest
     volumes:
