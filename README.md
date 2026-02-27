@@ -1,2 +1,2 @@
 # EpicGamesCollector
-Useful bot if you forget to collect free cool games from EGS
+Useful bot for informing server about new free EGS games
