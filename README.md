@@ -1,2 +1,2 @@
 # EpicGamesCollector
-Useful bot for informing server about new free EGS games
+Discord server bot that posts the weekly free Epic Games Store titles.
