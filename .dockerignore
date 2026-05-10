@@ -1,0 +1,25 @@
+# Git
+.git
+.gitignore
+
+# Docker
+Dockerfile
+docker-compose.yml
+.dockerignore
+
+# Dependencies (Example: Node, Python)
+node_modules/
+venv/
+.env
+
+# Build outputs & Cache
+dist/
+build/
+*.log
+.cache/
+
+# OS/IDE files
+.DS_Store
+.idea/
+.vscode/
+Thumbs.db
